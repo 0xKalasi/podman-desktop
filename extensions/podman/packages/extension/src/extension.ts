@@ -591,7 +591,7 @@ function getLinuxSocketPath(): string {
 }
 
 // on linux, socket is started by the system service on a path like /run/user/1000/podman/podman.sock
-async function initDefaultLinux(provider: extensionApi.Provider): Promise<void> {
+export async function initDefaultLinux(provider: extensionApi.Provider): Promise<void> {
   const socketPath = getLinuxSocketPath();
   if (!fs.existsSync(socketPath)) {
     return;
@@ -639,7 +639,7 @@ async function isPodmanSocketAlive(socketPath: string): Promise<boolean> {
   });
 }
 
-async function monitorPodmanSocket(
+export async function monitorPodmanSocket(
   provider: extensionApi.Provider,
   socketPath: string,
   machineName?: string,
@@ -1963,6 +1963,10 @@ export async function getJSONMachineList(): Promise<MachineJSONListOutput> {
 export async function getJSONMachineListByProvider(containerMachineProvider?: string): Promise<MachineListOutput> {
   const { stdout, stderr } = await execPodman(['machine', 'list', '--format', 'json'], containerMachineProvider);
   return { stdout, stderr };
+}
+
+export function resetStopLoop(): void {
+  stopLoop = false;
 }
 
 export async function deactivate(): Promise<void> {
