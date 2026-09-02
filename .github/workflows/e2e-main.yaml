@@ -94,7 +94,6 @@ jobs:
     name: Run E2E tests - ${{ matrix.installation }}
     runs-on: ubuntu-24.04
     # disable on forks as secrets are not available
-    if: github.event.repository.fork == false
     permissions:
       checks: write # required for mikepenz/action-junit-report
     strategy:
@@ -120,10 +119,14 @@ jobs:
           echo "KIND_PROVIDER=${{ github.event.inputs.kind_provider || env.DEFAULT_KIND_PROVIDER }}" >> $GITHUB_ENV
 
       - name: Install Podman v5 using external action
+        id: podman-install
         # Use the action from the other repository
-        uses: redhat-actions/podman-install@aea6ff44f2a4a82da13d22061ce73443a125925d
+        uses: 0xKalasi/podman-install@1f074e83c9f2a416faf450018568fad12490dd4b
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: See podman version
+        run: echo ${{ steps.podman-install.outputs.podman-version }}
 
       - name: Setup testenv using external action
         uses: podman-desktop/e2e/.github/actions/pde2e-testenv-prepare@13e2c57c759137bfc1f437f221967461e8a98e2a
@@ -219,12 +222,29 @@ jobs:
           annotate_only: true
           require_tests:  true
           report_paths: '**/*results.xml'
+      
+      - name: Create json file with workflow run attributes
+        if: always()
+        uses: jsdaniell/create-json@b8e77fa01397ca39cc4a6198cc29a3be5481afef
+        with: 
+          name: "workflow-run-attributes.json"
+          json: |
+            {
+              "podman-provider": "${{ env.PODMAN_PROVIDER }}",
+              "podman-version": "${{ steps.fetch-podman.outputs.version }}",
+              "os": "windows",
+              "os-version": "${{ matrix.windows-version }}",
+              "architecture": "x86_64",
+              "platform": "windows-nt",
+              "repository": "podman-desktop"
+            }
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
           name: e2e-tests-${{ matrix.installation }}
           path: |
+            **/workflow-run-attributes.json
             ./tests/**/output/
             !./tests/**/traces/raw
 
