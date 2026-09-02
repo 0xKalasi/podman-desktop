@@ -126,7 +126,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: See podman version
-        run: echo ${{ steps.podman-install.outputs.podman-version }}
+        shell: bash
+        env: 
+          PODMAN_VERSION: ${{ steps.podman-install.outputs.podman-version }}
+        run: echo "Podman version: $PODMAN_VERSION""
 
       - name: Setup testenv using external action
         uses: podman-desktop/e2e/.github/actions/pde2e-testenv-prepare@13e2c57c759137bfc1f437f221967461e8a98e2a
