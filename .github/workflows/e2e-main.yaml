@@ -94,7 +94,7 @@ jobs:
     name: Run E2E tests - ${{ matrix.installation }}
     runs-on: ubuntu-24.04
     # disable on forks as secrets are not available
-    if: github.event.repository.fork == false
+    # if: github.event.repository.fork == false
     permissions:
       checks: write # required for mikepenz/action-junit-report
     strategy:
@@ -253,7 +253,7 @@ jobs:
     name: ${{ matrix.os }} update e2e tests - ${{ matrix.installation }}
     runs-on: ${{ matrix.os }}
     # disable on forks as secrets are not available
-    if: github.event.repository.fork == false
+    # if: github.event.repository.fork == false
     permissions:
       checks: write # required for mikepenz/action-junit-report
     env:
@@ -389,7 +389,7 @@ jobs:
         os: [macos-26, macos-15-intel]
     runs-on: ${{ matrix.os }}
     # disable on forks as secrets are not available
-    if: github.event.repository.fork == false
+    # if: github.event.repository.fork == false
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 60
