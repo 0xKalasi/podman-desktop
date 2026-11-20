@@ -55,7 +55,9 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 180
     # disable on forks as secrets are not available
-    if: github.event.repository.fork == false
+    # TEMPORARY (scratch branch only, never merge): disabled so this suite can run
+    # on a fork to validate the status bar providers change before opening the PR.
+    # if: github.event.repository.fork == false
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
