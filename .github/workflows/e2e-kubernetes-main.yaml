@@ -19,7 +19,9 @@ name: e2e-kubernetes-tests-main
 
 on:
   push:
-    branches: [main]
+    # ci/k8s-trial added temporarily (scratch branch only, never merge) so the
+    # suite can be triggered by a push instead of workflow_dispatch.
+    branches: [main, ci/k8s-trial]
 
   workflow_dispatch:
     inputs:
